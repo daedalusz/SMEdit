@@ -31,7 +31,6 @@ import jo.util.GlobalConfiguration;
 import jo.util.OptionScreen;
 import jo.util.Paths;
 import static jo.util.Paths.getDownloadCaches;
-import jo.util.Update;
 import jo.util.io.HttpClient;
 
 /**
@@ -44,7 +43,6 @@ public class SMEdit extends JFrame {
     private static SMEdit app;
     private static final long serialVersionUID = 1L;
 
-    private static final Update updater = new Update(app);
     private static final Logger log = Logger.getLogger(SMEdit.class.getName());
 
     public static void main(final String[] args) {
@@ -52,10 +50,9 @@ public class SMEdit extends JFrame {
         if (!Paths.validateCurrentDirectory()) {
             return;
         }
-        updater.checkUpdate(true);
-        if (updater.update == -1) {
+        
             OptionScreen opts = new OptionScreen(args);
-        }
+        
 
     }
     private final String[] mArgs;
