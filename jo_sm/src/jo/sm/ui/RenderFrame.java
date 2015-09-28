@@ -22,6 +22,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -83,6 +84,8 @@ import jo.util.GlobalConfiguration;
 import jo.util.Paths;
 import jo.util.Resources;
 import jo.util.SplashScreen;
+import java.awt.Toolkit;
+
 
 @SuppressWarnings("serial")
 public class RenderFrame extends JFrame {
@@ -258,62 +261,79 @@ public class RenderFrame extends JFrame {
         setOuterToolBar(new JToolBar());
         setInnerToolBar(new JToolBar());
 
-        JButton openPrintButton;
-        final ImageIcon op = new ImageIcon(Paths.getIconDirectory() + "/open_print.png");
-        openPrintButton = getDefaultButton(new OpenExistingAction1(this), "open a blueprint", op);
-        outerToolBar.add(openPrintButton);
+        Toolkit tk = Toolkit.getDefaultToolkit();
+        Image tempImg;
+        try {         
+            JButton openPrintButton;
+            tempImg = tk.createImage(getClass().getResource(Paths.getIconDirectory() + "/open_print.png"));
+            final ImageIcon op = new ImageIcon(tempImg);
+            openPrintButton = getDefaultButton(new OpenExistingAction1(this), "open a blueprint", op);
+            outerToolBar.add(openPrintButton);
 
-        JButton openButton;
-        final ImageIcon o = new ImageIcon(Paths.getIconDirectory() + "/open.png");
-        openButton = getDefaultButton(new OpenFileAction1(this), "open a file", o);
-        outerToolBar.add(openButton);
+            JButton openButton;
+            tempImg = tk.createImage(getClass().getResource(Paths.getIconDirectory() + "/open.png"));
+            final ImageIcon o = new ImageIcon(tempImg);
+            openButton = getDefaultButton(new OpenFileAction1(this), "open a file", o);
+            outerToolBar.add(openButton);
 
-        JButton savePrintButton;
-        final ImageIcon sp = new ImageIcon(Paths.getIconDirectory() + "/save.png");
-        savePrintButton = getDefaultButton(new SaveAsBlueprintAction1(this, false), "Save blueprint", sp);
-        outerToolBar.add(savePrintButton);
+            JButton savePrintButton;
+            tempImg = tk.createImage(getClass().getResource(Paths.getIconDirectory() + "/save.png"));
+            final ImageIcon sp = new ImageIcon(tempImg);
+            savePrintButton = getDefaultButton(new SaveAsBlueprintAction1(this, false), "Save blueprint", sp);
+            outerToolBar.add(savePrintButton);
+            
+            JButton saveButton;
+            tempImg = tk.createImage(getClass().getResource(Paths.getIconDirectory() + "/save_as.png"));
+            final ImageIcon sa = new ImageIcon(tempImg);
+            saveButton = getDefaultButton(new SaveAsFileAction1(this), "Save file", sa);
+            outerToolBar.add(saveButton);
 
-        JButton saveButton;
-        final ImageIcon sa = new ImageIcon(Paths.getIconDirectory() + "/save_as.png");
-        saveButton = getDefaultButton(new SaveAsFileAction1(this), "Save file", sa);
-        outerToolBar.add(saveButton);
+            JButton screenButton;
+            tempImg = tk.createImage(getClass().getResource(Paths.getIconDirectory() + "/shot.png"));
+            final ImageIcon s = new ImageIcon(tempImg);
+            screenButton = getDefaultButton(new Shot(this), "Screenshots of work", s);
+            outerToolBar.add(screenButton);
 
-        JButton screenButton;
-        final ImageIcon s = new ImageIcon(Paths.getIconDirectory() + "/shot.png");
-        screenButton = getDefaultButton(new Shot(this), "Screenshots of work", s);
-        outerToolBar.add(screenButton);
+            outerToolBar.addSeparator();
+            outerToolBar.addSeparator();
+            
+            JButton undoButton;
+            tempImg = tk.createImage(getClass().getResource(Paths.getIconDirectory() + "/undo.png"));
+            final ImageIcon u = new ImageIcon(tempImg);
+            undoButton = getDefaultButton(new UndoActionButton(this), "Undo last action", u);
+            outerToolBar.add(undoButton);
 
-        outerToolBar.addSeparator();
-        outerToolBar.addSeparator();
+            JButton redoButton;
+            tempImg = tk.createImage(getClass().getResource(Paths.getIconDirectory() + "/redo.png"));
+            final ImageIcon r = new ImageIcon(tempImg);
+            redoButton = getDefaultButton(new RedoActionButton(this), "Redo last action", r);
+            outerToolBar.add(redoButton);
 
-        JButton undoButton;
-        final ImageIcon u = new ImageIcon(Paths.getIconDirectory() + "/undo.png");
-        undoButton = getDefaultButton(new UndoActionButton(this), "Undo last action", u);
-        outerToolBar.add(undoButton);
+            outerToolBar.add(Box.createHorizontalGlue());
+            tempImg = tk.createImage(getClass().getResource(Paths.getIconDirectory() + "/plugins.png"));
+            final ImageIcon p = new ImageIcon(tempImg);
+            mPlugins = getDefaultActionlessButton("Plugins", "List of avalable plugins", p);
+            outerToolBar.add(mPlugins);
+            mPlugins.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    doPlugin();
+                }
+            });
 
-        JButton redoButton;
-        final ImageIcon r = new ImageIcon(Paths.getIconDirectory() + "/redo.png");
-        redoButton = getDefaultButton(new RedoActionButton(this), "Redo last action", r);
-        outerToolBar.add(redoButton);
-
-        outerToolBar.add(Box.createHorizontalGlue());
-
-        final ImageIcon p = new ImageIcon(Paths.getIconDirectory() + "/plugins.png");
-        mPlugins = getDefaultActionlessButton("Plugins", "List of avalable plugins", p);
-        outerToolBar.add(mPlugins);
-        mPlugins.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                doPlugin();
-            }
-        });
-
-        /*add memory ProgressBar*/
-        JButton memButton;
-        final ImageIcon c = new ImageIcon(Paths.getIconDirectory() + "/cpu.png");
-        memButton = getProgressButton(new memRefresh(), "Click to refresh Memory use", c);
-        outerToolBar.add(memButton);
-
+            /*add memory ProgressBar*/
+            JButton memButton;
+            tempImg = tk.createImage(getClass().getResource(Paths.getIconDirectory() + "/cpu.png"));
+            final ImageIcon c = new ImageIcon(tempImg);
+            memButton = getProgressButton(new memRefresh(), "Click to refresh Memory use", c);
+            outerToolBar.add(memButton);
+            
+       
+        } catch(NullPointerException e) {
+            System.err.println("Error Loading Icons!");
+            System.err.println(e.toString());
+        }
+       
     }
 
     private void setupMenus() {
