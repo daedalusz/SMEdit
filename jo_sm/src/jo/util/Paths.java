@@ -74,8 +74,9 @@ public class Paths {
 
     }
 
+    //HACK - Modified to reference JAR
     public static String getIconDirectory() {
-        return Paths.getHomeDirectory() + File.separator + "resources" + File.separator + "images";
+        return "/resources/images";
     }
     
     public static String getSMEBlueprintDirectory() {
