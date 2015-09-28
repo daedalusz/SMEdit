@@ -60,39 +60,7 @@ public class Paths {
         return path;
     }
 
-    public static Map<String, File> getDownloadCaches() {
-        if (downloadCache == null) {
-            downloadCache = new HashMap<>(8);
-            /* FILES */
-            downloadCache.put(URLs.DOWNLOAD, new File(getHomeDirectory(), "jo_sm.jar"));
-            downloadCache.put(URLs.DOWNLOADPLUG, new File(getPluginsDirectory(), "JoFileMods.jar"));
-            downloadCache.put(URLs.ISANTH_HEAD, new File(getIsanthDirectory(), "header.smbph"));
-            downloadCache.put(URLs.ISANTH_LOGIC, new File(getIsanthDirectory(), "logic.smbpl"));
-            downloadCache.put(URLs.ISANTH_META, new File(getIsanthDirectory(), "meta.smbpm"));
-            downloadCache.put(URLs.ISANTH_DATA, new File(getIsanthDataDirectory(), "Omen-Navy-Class.0.0.0.smd2"));
-
-            /* ICONS */
-            downloadCache.put(URLs.ICON_FILE_ACCOUNT, new File(getIconDirectory(), "account.png"));
-            downloadCache.put(URLs.ICON_FILE_HOME, new File(getIconDirectory(), "home.png"));
-            downloadCache.put(URLs.ICON_FILE_PLUGINS, new File(getIconDirectory(), "plugins.png"));
-            downloadCache.put(URLs.ICON_FILE_UNDO, new File(getIconDirectory(), "undo.png"));
-            downloadCache.put(URLs.ICON_FILE_REDO, new File(getIconDirectory(), "redo.png"));
-            downloadCache.put(URLs.ICON_FILE_STOP, new File(getIconDirectory(), "stop.png"));
-            downloadCache.put(URLs.ICON_FILE_FILL, new File(getIconDirectory(), "fill.png"));
-            downloadCache.put(URLs.ICON_FILE_SHOT, new File(getIconDirectory(), "shot.png"));
-            downloadCache.put(URLs.ICON_FILE_FILE, new File(getIconDirectory(), "open.png"));
-            downloadCache.put(URLs.ICON_FILE_BPFILE, new File(getIconDirectory(), "open_print.png"));
-            downloadCache.put(URLs.ICON_FILE_SAVE, new File(getIconDirectory(), "save.png"));
-            downloadCache.put(URLs.ICON_FILE_SAVEAS, new File(getIconDirectory(), "save_as.png"));
-
-            downloadCache.put(URLs.ICON_FILE_WIKI, new File(getIconDirectory(), "wiki.png"));
-            downloadCache.put(URLs.ICON_FILE_FACE, new File(getIconDirectory(), "face.png"));
-            downloadCache.put(URLs.ICON_FILE_TWIT, new File(getIconDirectory(), "twit.png"));
-            downloadCache.put(URLs.ICON_FILE_PROJECT, new File(getIconDirectory(), "web.png"));
-
-        }
-        return Collections.unmodifiableMap(downloadCache);
-    }
+    
     /* folder directories */
 
     public static String getHomeDirectory() {
@@ -214,28 +182,24 @@ public class Paths {
     public static boolean validateCurrentDirectory() {
         loadProps();
         mStarMadeDir = new File(mProps.getProperty("starmade.home", ""));
+        
         if (isStarMadeDirectory(mStarMadeDir)) {
             return true;
         }
+        
         mStarMadeDir = new File(".");
         if (isStarMadeDirectory(mStarMadeDir)) {
             saveProps();
             return true;
         }
+        
         System.out.println("Scanning current directory");
         mStarMadeDir = null;
         String home = System.getProperty("user.dir");
         lookForStarMadeDir(new File(home));
-        if (mStarMadeDir != null) {
-            saveProps();
-            for (final Map.Entry<String, File> item : getDownloadCaches().entrySet()) {
-                try {
-                    HttpClient.download(new URL(item.getKey()), item.getValue());
-                } catch (final IOException e) {
-                }
-            }
-            return true;
-        }
+        
+        //Removed Download code from here... hardcoded online repos no longer exist.
+        
         System.out.println("Scanning home directory");
         mStarMadeDir = null;
         home = System.getProperty("user.home");

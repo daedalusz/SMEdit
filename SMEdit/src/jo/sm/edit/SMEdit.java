@@ -27,10 +27,10 @@ import java.net.URLClassLoader;
 import java.util.Map;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import jo.util.GlobalConfiguration;
 import jo.util.OptionScreen;
 import jo.util.Paths;
-import static jo.util.Paths.getDownloadCaches;
 import jo.util.io.HttpClient;
 
 /**
@@ -62,14 +62,12 @@ public class SMEdit extends JFrame {
         mOptionDir = new File(Paths.getHomeDirectory());
         File jo_smJar = new File(mOptionDir, "jo_sm.jar");
         
+        //Check if the SM Tools are present where we expect them to be.
         if (!jo_smJar.exists()) {
-            for (final Map.Entry<String, File> item : getDownloadCaches().entrySet()) {
-                try {
-                    HttpClient.download(new URL(item.getKey()), item.getValue());
-                } catch (final IOException e) {
-                }
-            }
+           JOptionPane.showMessageDialog(this, "Missing jo_sm.jar from "+ mOptionDir, "Error Locating SM Tools", JOptionPane.ERROR_MESSAGE );
+           System.exit(1); 
         }
+        
         try {
             URL josmURL = jo_smJar.toURI().toURL();
             URLClassLoader smLoader = new URLClassLoader(new URL[]{josmURL}, SMEdit.class.getClassLoader());
